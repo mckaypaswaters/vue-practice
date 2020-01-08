@@ -49,11 +49,9 @@ Vue.component('product', {
                 <button v-on:click='addToCart' 
                 :disabled='!inStock'
                 :class='{disabledButton: !inStock}'>Add to Cart</button>
-                <!-- <button @click='removeFromCart'>Remove from Cart</button> -->
+                <button @click='removeFromCart'>Remove from Cart</button>
 
-                <div class="cart">
-                    <p>Cart({{cart}})</p>
-                </div>
+                
                 
                 <!-- <a :href="link" target="_blank">More products like this</a> -->
             </div>
@@ -76,10 +74,9 @@ Vue.component('product', {
                         variantId: 2235,
                         variantColor: 'blue',
                         variantImage: './assets/vmSocks-blue-onWhite.jpg',
-                        vairantQuantity: 0
+                        vairantQuantity: 10
                     }
                 ],
-                cart: 0,
                 // sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL']
                 onSale: true
                 // link: 'https://www.amazon.com/s?k=green+socks&ref=nb_sb_noss'
@@ -87,13 +84,13 @@ Vue.component('product', {
     },
             methods: {
                 addToCart() {
-                    this.cart += 1
+                    this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId)
                 },
                 updateProduct(variantImage) {
                     this.image = variantImage
                 },
                 removeFromCart() {
-                    this.cart -= 1
+                    this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId)
                 },
                 updateProduct(index) {
                     this.selectedVariant = index
@@ -128,6 +125,19 @@ Vue.component('product', {
 var app = new Vue({
     el: '#app',
     data: {
-        premium: false
+        premium: false,
+        cart: []
+    },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id)
+        },
+        removeItem(id) {
+            for (var i = this.cart.length - 1; i >= 0; i--){
+                if (this.cart[i] === id){
+                    this.cart.splice(i, 1)
+                }
+            }
+        }
     }
 })
